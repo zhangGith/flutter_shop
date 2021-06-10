@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/pages/cart_page.dart';
+import 'package:flutter_shop/pages/category_page.dart';
+import 'package:flutter_shop/pages/home_page.dart';
+import 'package:flutter_shop/pages/member_page.dart';
 
 class IndexPage extends StatefulWidget {
   @override
@@ -27,12 +31,38 @@ class _IndexPageState extends State<IndexPage> {
     ),
   ];
 
+  final List tabBodies = [
+    HomePage(),
+    CategoryPage(),
+    CartPage(),
+    MemberPage()
+  ];
+
+  int currentIndex = 0;
+  var currentPage;
+
+  @override
+  void initState() {
+    currentPage = tabBodies[currentPage];
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('首页'),
-      ),
+      backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
+      bottomNavigationBar: BottomNavigationBar(
+        items: bottomTabs,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+            currentPage = tabBodies[index];
+          });
+        },
+        ),
+      body: currentPage,
     );
   }
 }
