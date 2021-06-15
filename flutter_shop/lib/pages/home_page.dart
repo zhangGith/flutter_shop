@@ -9,23 +9,6 @@ class _HomePageState extends State<HomePage> {
   TextEditingController typeController = TextEditingController();
   String showText = '欢迎你来到美好人才';
 
-  //  void _choiceAction(){
-  //   print('开始选择你喜欢的类型............');
-  //   if(typeController.text.toString()==''){
-  //     showDialog(
-  //       context: context,
-  //       builder: (context)=>AlertDialog(title:Text('美女类型不能为空'))
-  //     );
-  //   }else{
-  //       getHttp(typeController.text.toString()).then((val){
-  //        setState(() {
-  //          showText=val['data']['name'].toString();
-  //        });
-  //       });
-  //   }
-
-  // }
-
   void _choiceAction() {
     print('.........');
     if (typeController.text.toString() == '') {
@@ -56,6 +39,28 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _jike() {
+    print('开始请求数据。。。。。。');
+    getJikeHttp().then((value) {
+      setState(() {
+        showText = 'dddddddddd';
+      });
+    });
+  }
+
+  Future getJikeHttp()async{
+    try{
+      Response response;
+      Dio dio = new Dio(); 
+      response = await dio.get("https://time.geekbang.org/serv/v1/column/newAll");
+      print(response);
+      return response.data;
+    }catch(e){
+      return print(e);
+    }
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                 autofocus: false,
             ),
             RaisedButton(
-              onPressed: null,
+              onPressed: _jike,
               child: Text('选择完毕'),
               ),
 
