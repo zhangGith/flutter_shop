@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:convert';
 
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
@@ -57,37 +59,18 @@ class _HomePageState extends State<HomePage> {
 
 //********************************** */
 
-// class SwiperDiy extends StatelessWidget {
-
-//   final List? swiperDataList;
-//   SwiperDiy({
-//     Key? key,
-//     this.swiperDataList,
-//   }) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 333.0,
-//       child: Swiper(
-//         itemCount: swiperDataList!.length,
-//         itemBuilder: (context, index) {
-//           return Image.network('${swiperDataList![index]}', fit: BoxFit.fill);
-//         },
-//       ),
-//     );
-//   }
-// }
-
 class SwiperDiy extends StatelessWidget {
 
   final List swiperItems;
 
-  SwiperDiy({Key key, this.swiperItems}) : super(key: key);
+  SwiperDiy({Key? key, required this.swiperItems}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
     return Container(
-      height: 333.0,
+      height: ScreenUtil().setHeight(333),
+      width: ScreenUtil().setWidth(750),
       child: Swiper(
         itemCount: swiperItems.length,
         itemBuilder: (context, index) {
@@ -96,6 +79,76 @@ class SwiperDiy extends StatelessWidget {
         pagination: SwiperPagination(),
         autoplay: true,
         ),
+    );
+  }
+}
+
+class TopNavigator extends StatelessWidget {
+
+  final List navList;
+  TopNavigator({Key? key, required this.navList}) : super(key: key);
+
+  Widget _gridViewItemUI(BuildContext context, item) {
+    return InkWell(
+      onTap: () => print('点击导航'),
+      child: Column(
+        children: [
+          Image.network(item['image'], width: ScreenUtil().setWidth(95));
+          Text(item['mallCategoryName']),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(320),
+      padding: EdgeInsets.all(3.0),
+      child: GridView.count(
+        crossAxisCount: 5,
+        padding: EdgeInsets.all(4.0),
+        children: navList.map((e) => _gridViewItemUI(context, e)).toList(),
+        ),
+    );
+  }
+}
+
+
+// //广告图片
+class AdBanner extends StatelessWidget {
+  final String advertesPicture;
+
+  AdBanner({Key? key, required this.advertesPicture}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Image.network(advertesPicture),
+    );
+  }
+}
+
+class LeaderPhone extends StatelessWidget {
+  final String leaderImage;
+  final String leaderPhone;
+
+  LeaderPhone({required Key key, required this.leaderImage, required this.leaderPhone}) : super(key: key);
+
+  Future<void> _openUrl() async {
+    String url = 'tel:' + leaderPhone;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'could not lauch url';
+    }}
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: InkWell(
+        onTap: _openUrl,
+        child: Image.network(leaderImage),
+      ),
     );
   }
 }
